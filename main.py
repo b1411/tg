@@ -4,11 +4,11 @@ import sys
 from os import getenv
 import requests
 
-from aiogram import Bot, Dispatcher, types, Router
+from aiogram import Bot, Dispatcher, types, Router, flags
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message
 from aiogram.enums import ParseMode
-from aiogram.methods.send_chat_action import SendChatAction
+from aiogram.utils.chat_action import ChatActionMiddleware
 
 TOKEN = '6423408643:AAEnM4RNUCt03vxnRxbYtOwdl1fVchUBsko'
 
@@ -29,6 +29,7 @@ async def end_session(message: Message):
 
 
 @dp.message()
+@flags.chat_action('typing')
 async def answer(message: Message):
     data = {
         'message': message.text,
@@ -40,6 +41,7 @@ async def answer(message: Message):
 
 async def main():
     bot = Bot(token=TOKEN, parse_mode=ParseMode.MARKDOWN)
+    dp.message.middleware(ChatActionMiddleware())
     await dp.start_polling(bot)
 
 if __name__ == '__main__':
